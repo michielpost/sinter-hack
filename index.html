@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM ACCESS REQUIRED</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        .terminal {
+            background-color: rgba(0, 50, 0, 0.3);
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        input {
+            background-color: #000;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 10px;
+            margin: 10px;
+            font-family: 'Courier New', monospace;
+            outline: none;
+        }
+
+        button {
+            background-color: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #0f0;
+            color: #000;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        #success {
+            display: none;
+            padding: 20px;
+            background-color: #000;
+            border: 2px solid #0f0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="blink">SYSTEM ACCESS REQUIRED</h1>
+        <div class="terminal">
+            <p>ENTER SECURITY OVERRIDE CODE:</p>
+            <input type="password" id="passwordInput" placeholder="ENTER CODE">
+            <button onclick="checkPassword()">VERIFY</button>
+            <div id="message"></div>
+        </div>
+        <div id="success">
+            <h2>ACCESS GRANTED</h2>
+            <p>INITIALIZING SECURE CONNECTION...</p>
+            <iframe width="560" height="315" 
+                src="https://www.youtube.com/embed/LFSsoCWi06E?autoplay=1" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        const correctPassword = "test";
+        let attempts = 0;
+
+        function checkPassword() {
+            const input = document.getElementById("passwordInput").value;
+            const messageDiv = document.getElementById("message");
+            
+            if (input === correctPassword) {
+                messageDiv.innerHTML = "ACCESS GRANTED...";
+                messageDiv.style.color = "#0f0";
+                document.getElementById("success").style.display = "block";
+                
+                // Scroll to the video
+                setTimeout(() => {
+                    document.getElementById("success").scrollIntoView({ 
+                        behavior: "smooth" 
+                    });
+                }, 1000);
+            } else {
+                attempts++;
+                messageDiv.style.color = "#f00";
+                messageDiv.innerHTML = `ACCESS DENIED (Attempt ${attempts}/∞)<br>INCORRECT SECURITY CODE`;
+                
+                // Shake effect on wrong password
+                document.querySelector('.container').style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    document.querySelector('.container').style.animation = '';
+                }, 500);
+            }
+        }
+
+        // Add keyboard enter key support
+        document.getElementById("passwordInput").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                checkPassword();
+            }
+        });
+    </script>
+</body>
+</html> 
