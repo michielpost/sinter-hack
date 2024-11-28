@@ -78,9 +78,87 @@
             border: 2px solid #0f0;
             margin-top: 20px;
         }
+
+        .hacking-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: none;
+            font-family: 'Courier New', monospace;
+            color: #0f0;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .matrix-character {
+            position: absolute;
+            font-size: 20px;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .typing-effect {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            text-align: left;
+            display: none;
+            white-space: pre-line;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .glitch {
+            animation: glitch 0.3s infinite;
+            position: relative;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+                text-shadow: -2px 0 #0f0, 2px 2px #f00;
+            }
+            25% {
+                transform: translate(-2px, 2px);
+                text-shadow: 2px -2px #0f0, -2px -2px #f00;
+            }
+            50% {
+                transform: translate(2px, -2px);
+                text-shadow: 2px 0 #0f0, -2px 2px #f00;
+            }
+            75% {
+                transform: translate(-2px, 2px);
+                text-shadow: -2px -2px #0f0, 2px -2px #f00;
+            }
+            100% {
+                transform: translate(0);
+                text-shadow: -2px 0 #0f0, 2px 2px #f00;
+            }
+        }
     </style>
 </head>
 <body>
+    <div id="hackingAnimation" class="hacking-animation"></div>
+    <div id="typingEffect" class="typing-effect"></div>
     <div class="container">
         <h1 class="blink">SYSTEM ACCESS REQUIRED</h1>
         <div class="terminal">
@@ -104,28 +182,100 @@
     <script>
         const correctPassword = "test";
         let attempts = 0;
+        let isHacking = false;
+        let isAnimating = false;
+
+        const hackingMessages = [
+            "BYPASSING SECURITY PROTOCOLS...",
+            "INJECTING SQL OVERRIDE CODES...",
+            "DECRYPTING MAINFRAME ACCESS...",
+            "DISABLING SECURITY FIREWALLS...",
+            "ESTABLISHING SECURE CONNECTION...",
+            "ACCESSING CLASSIFIED FILES...",
+            "SYSTEM OVERRIDE SUCCESSFUL!"
+        ];
+
+        async function typeMessage(message, element) {
+            for (let i = 0; i < message.length; i++) {
+                element.textContent += message[i];
+                await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 50));
+            }
+            element.textContent += '\n\n';
+        }
+
+        async function playHackingSequence() {
+            const typingDiv = document.getElementById('typingEffect');
+            typingDiv.style.display = 'block';
+            typingDiv.textContent = '';
+            
+            for (const message of hackingMessages) {
+                if (!isAnimating) break;
+                await typeMessage(message, typingDiv);
+            }
+        }
 
         function checkPassword() {
             const input = document.getElementById("passwordInput").value;
             const messageDiv = document.getElementById("message");
+            const button = document.querySelector('button');
+            const passwordInput = document.getElementById("passwordInput");
+            
+            if (isHacking || isAnimating) return;
             
             if (input === correctPassword) {
-                messageDiv.innerHTML = "ACCESS GRANTED...";
+                isHacking = true;
+                isAnimating = true;
+                messageDiv.innerHTML = "INITIATING SYSTEM OVERRIDE...";
                 messageDiv.style.color = "#0f0";
-                document.getElementById("success").style.display = "block";
                 
-                // Scroll to the video
+                button.disabled = true;
+                passwordInput.disabled = true;
+                
+                const hackingDiv = document.getElementById("hackingAnimation");
+                hackingDiv.style.display = "block";
+                
+                for (let i = 0; i < 100; i++) {
+                    createMatrixColumn();
+                }
+
+                document.querySelectorAll('.container *:not(input):not(button)').forEach(el => {
+                    if (el.textContent.trim().length > 0) {
+                        el.classList.add('glitch');
+                    }
+                });
+
+                playHackingSequence();
+
                 setTimeout(() => {
+                    hackingDiv.style.display = "none";
+                    document.getElementById("typingEffect").style.display = "none";
+                    document.getElementById("success").style.display = "block";
+                    
+                    document.querySelectorAll('.glitch').forEach(el => {
+                        el.classList.remove('glitch');
+                    });
+                    
                     document.getElementById("success").scrollIntoView({ 
                         behavior: "smooth" 
                     });
-                }, 1000);
+                    
+                    isHacking = false;
+                    isAnimating = false;
+                    button.disabled = false;
+                    passwordInput.disabled = false;
+                }, 5000);
             } else {
                 attempts++;
                 messageDiv.style.color = "#f00";
                 messageDiv.innerHTML = `ACCESS DENIED (Attempt ${attempts}/∞)<br>INCORRECT SECURITY CODE`;
                 
-                // Shake effect on wrong password
+                document.querySelectorAll('.container *:not(input):not(button)').forEach(el => {
+                    if (el.textContent.trim().length > 0) {
+                        el.classList.add('glitch');
+                        setTimeout(() => el.classList.remove('glitch'), 500);
+                    }
+                });
+                
                 document.querySelector('.container').style.animation = 'shake 0.5s';
                 setTimeout(() => {
                     document.querySelector('.container').style.animation = '';
@@ -133,12 +283,27 @@
             }
         }
 
-        // Add keyboard enter key support
         document.getElementById("passwordInput").addEventListener("keyup", function(event) {
             if (event.key === "Enter") {
                 checkPassword();
             }
         });
+
+        function createMatrixColumn() {
+            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*";
+            const column = document.createElement("div");
+            column.className = "matrix-character";
+            column.style.left = Math.random() * 100 + "vw";
+            column.style.animationDuration = (Math.random() * 2 + 1) + "s";
+            
+            column.innerText = characters[Math.floor(Math.random() * characters.length)];
+            
+            document.getElementById("hackingAnimation").appendChild(column);
+            
+            setTimeout(() => {
+                column.remove();
+            }, 3000);
+        }
     </script>
 </body>
 </html> 
