@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SYSTEM ACCESS REQUIRED</title>
+    <title>Sinterscape</title>
     <style>
         body {
             background-color: #000;
@@ -160,45 +160,37 @@
     <div id="hackingAnimation" class="hacking-animation"></div>
     <div id="typingEffect" class="typing-effect"></div>
     <div class="container">
-        <h1 class="blink">SYSTEM ACCESS REQUIRED</h1>
+        <h1 class="blink">Sinterscape</h1>
         <div class="terminal">
-            <p>ENTER SECURITY OVERRIDE CODE:</p>
-            <input type="password" id="passwordInput" placeholder="ENTER CODE">
-            <button onclick="checkPassword()">VERIFY</button>
+            <p>Voer geheime code in:</p>
+            <input type="password" id="passwordInput" placeholder="code">
+            <button onclick="checkPassword()">CONTROLE</button>
             <div id="message"></div>
         </div>
         <div id="success">
-            <h2>ACCESS GRANTED</h2>
-            <p>INITIALIZING SECURE CONNECTION...</p>
-            <iframe width="560" height="315" 
-                src="https://www.youtube.com/embed/LFSsoCWi06E?autoplay=1" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
+            <h2 class="blink">TOEGANG VERLEEND</h2>
+            <h2>Ga nu naar zolder en kijk in de kast van papa en mama.</h2>
         </div>
     </div>
 
     <script>
-        const correctPassword = "test";
+        const correctPassword = "5411";
         let attempts = 0;
         let isHacking = false;
         let isAnimating = false;
 
         const hackingMessages = [
-            "BYPASSING SECURITY PROTOCOLS...",
-            "INJECTING SQL OVERRIDE CODES...",
-            "DECRYPTING MAINFRAME ACCESS...",
-            "DISABLING SECURITY FIREWALLS...",
-            "ESTABLISHING SECURE CONNECTION...",
-            "ACCESSING CLASSIFIED FILES...",
-            "SYSTEM OVERRIDE SUCCESSFUL!"
+            "CONTROLE CIJFERS...",
+            "Gezichten scannen...",
+            "Pepernoten controle...",
+            "Laptop OK...",
+            "Internet check...",
         ];
 
         async function typeMessage(message, element) {
             for (let i = 0; i < message.length; i++) {
                 element.textContent += message[i];
-                await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 50));
+                await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 50));
             }
             element.textContent += '\n\n';
         }
@@ -225,7 +217,7 @@
             if (input === correctPassword) {
                 isHacking = true;
                 isAnimating = true;
-                messageDiv.innerHTML = "INITIATING SYSTEM OVERRIDE...";
+                messageDiv.innerHTML = "Opvragen van geheime toegang..";
                 messageDiv.style.color = "#0f0";
                 
                 button.disabled = true;
@@ -234,7 +226,7 @@
                 const hackingDiv = document.getElementById("hackingAnimation");
                 hackingDiv.style.display = "block";
                 
-                for (let i = 0; i < 100; i++) {
+                for (let i = 0; i < 150; i++) {
                     createMatrixColumn();
                 }
 
@@ -267,7 +259,7 @@
             } else {
                 attempts++;
                 messageDiv.style.color = "#f00";
-                messageDiv.innerHTML = `ACCESS DENIED (Attempt ${attempts}/∞)<br>INCORRECT SECURITY CODE`;
+                messageDiv.innerHTML = `GEEN TOEGANG (Poging ${attempts})<br>ONGELDIGE CODE`;
                 
                 document.querySelectorAll('.container *:not(input):not(button)').forEach(el => {
                     if (el.textContent.trim().length > 0) {
