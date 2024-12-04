@@ -8,3 +8,6 @@ when the password is right, show a div which has some html and embed a youtube v
 Additional prompts:
 - add a cool feature
 - add another cool feature
+
+
+DEMO: https://michielpost.github.io/sinter-hack/

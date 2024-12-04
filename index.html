@@ -154,6 +154,34 @@
                 text-shadow: -2px 0 #0f0, 2px 2px #f00;
             }
         }
+
+        .hint-text {
+            opacity: 0;
+            font-size: 0.9em;
+            color: #0f0;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #0f0;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+            margin-top: 10px;
+        }
+
+        @keyframes typing {
+            from { 
+                width: 0;
+                opacity: 1;
+            }
+            to { 
+                width: 100%;
+                opacity: 1;
+            }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #0f0 }
+        }
     </style>
 </head>
 <body>
@@ -178,6 +206,7 @@
         let attempts = 0;
         let isHacking = false;
         let isAnimating = false;
+        const maxAttempts = 3;
 
         const hackingMessages = [
             "CONTROLE CIJFERS...",
@@ -259,7 +288,27 @@
             } else {
                 attempts++;
                 messageDiv.style.color = "#f00";
-                messageDiv.innerHTML = `GEEN TOEGANG (Poging ${attempts})<br>ONGELDIGE CODE`;
+                let errorMessage = `GEEN TOEGANG (Poging ${attempts})<br>ONGELDIGE CODE`;
+                
+                if (attempts >= maxAttempts) {
+                    const hintText = 'Let op, de code bevat 4 cijfers.';
+                    errorMessage += '<br><div class="hint-text"></div>';
+                    messageDiv.innerHTML = errorMessage;
+                    
+                    // Animate the hint text
+                    const hintElement = messageDiv.querySelector('.hint-text');
+                    let currentChar = 0;
+                    const typeHint = setInterval(() => {
+                        if (currentChar < hintText.length) {
+                            hintElement.textContent += hintText[currentChar];
+                            currentChar++;
+                        } else {
+                            clearInterval(typeHint);
+                        }
+                    }, 50);
+                } else {
+                    messageDiv.innerHTML = errorMessage;
+                }
                 
                 document.querySelectorAll('.container *:not(input):not(button)').forEach(el => {
                     if (el.textContent.trim().length > 0) {
